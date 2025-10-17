@@ -522,7 +522,7 @@ function particle_density(ψ::MultiBosonCMPSData_MDMinv, component_index::Int; i
     return real(tr(envL * ON * envR) / tr(envL * envR))
 end
 
-function ground_state(H::AbstractHamiltonian, ψ0::MultiBosonCMPSData_MDMinv; preconditioner_type::Int=1, maxiter::Int=10000, gradtol=1e-6, fϵ=(x -> x), m_LBFGS::Int=8, (_finalize!)=(x, f, g, numiter) -> (x, f, g, numiter), verbosity=1)
+function ground_state(H::AbstractHamiltonian, ψ0::MultiBosonCMPSData_MDMinv; preconditioner_type::Int=1, maxiter::Int=10000, gradtol=1e-6, fϵ=(x -> x), m_LBFGS::Int=8, (_finalize!)=(x, f, g, numiter) -> (x, f, g, numiter), verbosity=1, debug=false)
     if H.L < Inf
         error("finite size not implemented yet.")
     end
@@ -646,7 +646,7 @@ function ground_state(H::AbstractHamiltonian, ψ0::MultiBosonCMPSData_MDMinv; pr
 
         _finalize!(x, f, g, numiter)
         ΔE = abs(f - x.prev)
-        println("ΔE = $(ΔE), ΔE/norm(g)^2 = $(ΔE/norm(g)^2)")
+        (debug) && println("ΔE = $(ΔE), ΔE/norm(g)^2 = $(ΔE/norm(g)^2)")
         x.df = norm(g)^2#abs(f - x.prev) # FIXME. change the name of df
         x.prev = f
         x.ρR = right_env(x.data; init=x.ρR, verbosity=verbosity)
