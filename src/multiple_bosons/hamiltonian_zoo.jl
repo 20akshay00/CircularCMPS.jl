@@ -7,12 +7,12 @@ struct SingleBosonLiebLiniger <: AbstractHamiltonian
 end
 
 function ground_state(H::SingleBosonLiebLiniger, ψ0::CMPSData)
-    if H.L == Inf 
+    if H.L == Inf
         function fE_inf(ψ::CMPSData)
-            OH = kinetic(ψ) + H.c*point_interaction(ψ) - H.μ * particle_density(ψ)
+            OH = kinetic(ψ) + H.c * point_interaction(ψ) - H.μ * particle_density(ψ)
             TM = TransferMatrix(ψ, ψ)
             envL = permute(left_env(TM), (), (1, 2))
-            envR = permute(right_env(TM), (2, 1), ()) 
+            envR = permute(right_env(TM), (2, 1), ())
             return real(tr(envL * OH * envR) / tr(envL * envR))
         end
         @show "infinite system"
@@ -21,10 +21,10 @@ function ground_state(H::SingleBosonLiebLiniger, ψ0::CMPSData)
     else
         @show "finite system of size $(H.L)"
         function fE_finiteL(ψ::CMPSData)
-            OH = kinetic(ψ) + H.c*point_interaction(ψ) - H.μ * particle_density(ψ)
+            OH = kinetic(ψ) + H.c * point_interaction(ψ) - H.μ * particle_density(ψ)
             expK, _ = finite_env(K_mat(ψ, ψ), H.L)
             return real(tr(expK * OH))
-        end 
+        end
 
         return minimize(fE_finiteL, ψ0, CircularCMPSRiemannian(1000, 1e-9, 2)) # TODO. change this as input. 
     end
@@ -41,5 +41,12 @@ struct MultiBosonLiebLinigerWithPairing <: AbstractHamiltonian
     cs::Matrix{<:Real}
     μs::Vector{<:Real}
     us::Vector{<:Real}
+    L::Real
+end
+
+struct MultiBosonRabiCoupled <: AbstractHamiltonian
+    cs::Matrix{<:Real}
+    μs::Vector{<:Real}
+    omega::Real
     L::Real
 end

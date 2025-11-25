@@ -4,7 +4,7 @@
     Construct the tensor for kinetic energy density `(dψ† / dx)(dψ / dx)`.
 """
 function kinetic(ψ::CMPSData)
-    Q, Rs = get_matrices(ψ) 
+    Q, Rs = get_matrices(ψ)
     Oψ = Ref(Q) .* Rs - Rs .* Ref(Q)
     return sum(K_otimes.(Oψ, Oψ))
 end
@@ -15,36 +15,40 @@ end
     Construct the tensor for particle density `ψ†ψ`.
 """
 function particle_density(ψ::CMPSData)
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     return sum(K_otimes.(Rs, Rs))
 end
 function particle_density(ψ::CMPSData, μs::Vector)
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     return sum(K_otimes.(Rs, Rs) .* μs)
 end
 function particle_density(ψ::CMPSData, index::Integer)
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     return K_otimes(Rs[index], Rs[index])
 end
 
+function particle_density(ψ::CMPSData, index1::Integer, index2::Integer)
+    _, Rs = get_matrices(ψ)
+    return K_otimes(Rs[index1], Rs[index2])
+end
 """
     point_interaction(ψ::CMPSData) 
 
     Construct the tensor for point interaction potential `ψ†ψ†ψψ`. 
 """
 function point_interaction(ψ::CMPSData)
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     Oψ = Rs .* Rs
     return sum(K_otimes.(Oψ, Oψ))
 end
 # error
 #function point_interaction(ψ::CMPSData, cs::Matrix)
-    #_, Rs = get_matrices(ψ) 
-    #R2s = Rs .* Rs 
-    #return sum(K_otimes.(R2s, cs * R2s))
+#_, Rs = get_matrices(ψ) 
+#R2s = Rs .* Rs 
+#return sum(K_otimes.(R2s, cs * R2s))
 #end
 function point_interaction(ψ::CMPSData, index::Integer)
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     Oψ = Rs[index] * Rs[index]
     return K_otimes(Oψ, Oψ)
 end
@@ -56,7 +60,7 @@ function point_interaction(ψ::CMPSData, index1::Integer, index2::Integer)
     _, Rs = get_matrices(ψ)
     Oψ_1 = Rs[index1] * Rs[index2]
     Oψ_2 = Rs[index1] * Rs[index2]
-    return K_otimes(Oψ_1, Oψ_2) 
+    return K_otimes(Oψ_1, Oψ_2)
 end
 
 """
@@ -66,19 +70,19 @@ end
 """
 function pairing(ψ::CMPSData)
     Iψ = id(domain(ψ.Q))
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     Oψ = Rs .* Rs
     return sum(K_otimes.(Ref(Iψ), Oψ)) + sum(K_otimes.(Oψ, Ref(Iψ)))
 end
 function pairing(ψ::CMPSData, index::Integer)
     Iψ = id(domain(ψ.Q))
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     Oψ = Rs[index] * Rs[index]
     return K_otimes(Iψ, Oψ) + K_otimes(Oψ, Iψ)
 end
 function pairing12(ψ::CMPSData, dag::Bool)
     Iψ = id(domain(ψ.Q))
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     Oψ = Rs[1] * Rs[2]
     if dag
         return K_otimes(Oψ, Iψ)
@@ -88,8 +92,8 @@ function pairing12(ψ::CMPSData, dag::Bool)
 end
 function hopping12(ψ::CMPSData, dag::Bool)
     Iψ = id(domain(ψ.Q))
-    _, Rs = get_matrices(ψ) 
-    Oψ_1 = Rs[1] 
+    _, Rs = get_matrices(ψ)
+    Oψ_1 = Rs[1]
     Oψ_2 = Rs[2]
     if dag
         return K_otimes(Oψ_1, Oψ_2)
@@ -104,7 +108,7 @@ end
     Lagrangian multiplier term `Λ [ψ1, ψ2]† [ψ1, ψ2]`.
 """
 function penalty_term(ψ::CMPSData, index1::Integer, index2::Integer, Λ::Real; order::Integer=1)
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     Oψ = Rs[index1] * Rs[index2] - Rs[index2] * Rs[index1]
     O_penalty1 = K_otimes(Oψ, Oψ) * Λ
     O_penalty = deepcopy(O_penalty1)
@@ -115,7 +119,7 @@ function penalty_term(ψ::CMPSData, index1::Integer, index2::Integer, Λ::Real; 
 end
 
 function penalty_term_type2(ψ::CMPSData, index1::Integer, index2::Integer, Λ::Real)
-    _, Rs = get_matrices(ψ) 
+    _, Rs = get_matrices(ψ)
     Oψ = Rs[index1] * Rs[index2] - Rs[index2] * Rs[index1]
     O_penalty = K_otimes(Oψ, Oψ)
     Id = id(domain(O_penalty))

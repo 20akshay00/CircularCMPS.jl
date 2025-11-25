@@ -504,6 +504,7 @@ function energy(H::MultiBosonLiebLiniger, ψ::MultiBosonCMPSData_MDMinv; init_en
     envR = permute(right_env(TM; init=init_envR), (2, 1), ())
     return real(tr(envL * OH * envR) / tr(envL * envR))
 end
+
 function energy(H::MultiBosonLiebLinigerWithPairing, ψ::MultiBosonCMPSData_MDMinv; init_envL=missing, init_envR=missing)
     ψn = CMPSData(ψ)
     OH = kinetic(ψn) + H.cs[1, 1] * point_interaction(ψn, 1) + H.cs[2, 2] * point_interaction(ψn, 2) + H.cs[1, 2] * point_interaction(ψn, 1, 2) + H.cs[2, 1] * point_interaction(ψn, 2, 1) - H.μs[1] * particle_density(ψn, 1) - H.μs[2] * particle_density(ψn, 2) + H.us[1] * pairing(ψn, 1) + H.us[2] * pairing(ψn, 2)
@@ -513,9 +514,27 @@ function energy(H::MultiBosonLiebLinigerWithPairing, ψ::MultiBosonCMPSData_MDMi
     return real(tr(envL * OH * envR) / tr(envL * envR))
 end
 
+function energy(H::MultiBosonRabiCoupled, ψ::MultiBosonCMPSData_MDMinv; init_envL=missing, init_envR=missing)
+    ψn = CMPSData(ψ)
+    OH = kinetic(ψn) + H.cs[1, 1] * point_interaction(ψn, 1) + H.cs[2, 2] * point_interaction(ψn, 2) + H.cs[1, 2] * point_interaction(ψn, 1, 2) + H.cs[2, 1] * point_interaction(ψn, 2, 1) - H.μs[1] * particle_density(ψn, 1) - H.μs[2] * particle_density(ψn, 2) + H.omega * (one_point_coupling(ψn, 1, 2) + one_point_coupling(ψn, 1, 2))
+    TM = TransferMatrix(ψn, ψn)
+    envL = permute(left_env(TM; init=init_envL), (), (1, 2))
+    envR = permute(right_env(TM; init=init_envR), (2, 1), ())
+    return real(tr(envL * OH * envR) / tr(envL * envR))
+end
+
 function particle_density(ψ::MultiBosonCMPSData_MDMinv, component_index::Int; init_envL=missing, init_envR=missing)
     ψn = CMPSData(ψ)
     ON = particle_density(ψn, component_index)
+    TM = TransferMatrix(ψn, ψn)
+    envL = permute(left_env(TM; init=init_envL), (), (1, 2))
+    envR = permute(right_env(TM; init=init_envR), (2, 1), ())
+    return real(tr(envL * ON * envR) / tr(envL * envR))
+end
+
+function one_point_coupling(ψ::MultiBosonCMPSData_MDMinv, index1::Int, index2::Int; init_envL=missing, init_envR=missing)
+    ψn = CMPSData(ψ)
+    ON = particle_density(ψn, index1, index2)
     TM = TransferMatrix(ψn, ψn)
     envL = permute(left_env(TM; init=init_envL), (), (1, 2))
     envR = permute(right_env(TM; init=init_envR), (2, 1), ())

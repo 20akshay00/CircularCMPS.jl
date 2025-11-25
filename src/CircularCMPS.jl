@@ -12,14 +12,14 @@ using LinearAlgebra
 using VectorInterface, TensorKit, TensorOperations, KrylovKit, TensorKitManifolds
 using ChainRules, ChainRulesCore, Zygote, FiniteDifferences
 using OptimKit
-using LoopVectorization 
+using LoopVectorization
 using Tullio
 using JLD2
 using Printf
 #using FastGaussQuadrature
 
 # utils.jl
-export MPSBondTensor, GenericMPSTensor, MPSTensor, fill_data!, randomize!, K_permute, K_permute_back, K_otimes, Kact_R, Kact_L, herm_reg_inv, quasi_inv 
+export MPSBondTensor, GenericMPSTensor, MPSTensor, fill_data!, randomize!, K_permute, K_permute_back, K_otimes, Kact_R, Kact_L, herm_reg_inv, quasi_inv
 
 # cmps.jl
 export AbstractCMPSData, CMPSData, get_χ, get_d, get_matrices, transfer_matrix, transfer_matrix_dagger, left_canonical, right_canonical, expand, K_mat, finite_env, rescale
@@ -76,29 +76,29 @@ export PowerMethod, power_iteration
 export VariationalOptim, leading_boundary
 
 # hamiltonian_zoo.jl
-export AbstractHamiltonian, SingleBosonLiebLiniger, MultiBosonLiebLiniger, ground_state, MultiBosonLiebLinigerWithPairing
+export AbstractHamiltonian, SingleBosonLiebLiniger, MultiBosonLiebLiniger, ground_state, MultiBosonLiebLinigerWithPairing, MultiBosonRabiCoupled
 
 # cMPS code for continuous Hamiltonians
-include("utils.jl");
-include("cmps.jl");
-include("cmpsAD.jl");
-include("operators.jl");
+include("utils.jl")
+include("cmps.jl")
+include("cmpsAD.jl")
+include("operators.jl")
 include("ground_state.jl")
-include("excited_state.jl");
-include("optim_alg.jl");
-include("transfer_matrix.jl");
-include("correlations.jl");
-include("multiple_bosons/hamiltonian_zoo.jl");
-include("multiple_bosons/multi_boson_cmps_via_penalty.jl");
-include("multiple_bosons/multi_boson_cmps_diag.jl");
-include("multiple_bosons/multi_boson_cmps_tnp.jl");
-include("multiple_bosons/multi_boson_cmps_MDMinv.jl");
+include("excited_state.jl")
+include("optim_alg.jl")
+include("transfer_matrix.jl")
+include("correlations.jl")
+include("multiple_bosons/hamiltonian_zoo.jl")
+include("multiple_bosons/multi_boson_cmps_via_penalty.jl")
+include("multiple_bosons/multi_boson_cmps_diag.jl")
+include("multiple_bosons/multi_boson_cmps_tnp.jl")
+include("multiple_bosons/multi_boson_cmps_MDMinv.jl")
 
 # cMPO code
-include("cmpo.jl");
-include("cmpoAD.jl");
-include("cmpo_zoo.jl");
-include("entanglement.jl");
+include("cmpo.jl")
+include("cmpoAD.jl")
+include("cmpo_zoo.jl")
+include("entanglement.jl")
 include("power_iteration.jl")
 include("power_iteration_1.jl")
 include("variational_optim.jl")
